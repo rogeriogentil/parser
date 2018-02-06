@@ -20,4 +20,4 @@ Just execute:
 
 Execute:
 
-    java -jar target/parser-2018.01.jar --help
+    java -jar target/parser.jar --help
