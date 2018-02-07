@@ -11,16 +11,16 @@ public enum ProgramOption {
     THRESHOLD("threshold", "Threshold"),
     HELP("help", "show help");
     
-    private final String name;
+    private final String option;
     private final String description;
 
-    private ProgramOption(String name, String description) {
-        this.name = name;
+    private ProgramOption(String option, String description) {
+        this.option = option;
         this.description = description;
     }
 
-    public String getName() {
-        return name;
+    public String getOption() {
+        return option;
     }
 
     public String getDescription() {

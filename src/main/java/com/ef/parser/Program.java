@@ -18,27 +18,27 @@ public class Program {
 
     protected final Options init() {
         Option help = Option.builder("h")
-                .longOpt(ProgramOption.HELP.getName())
+                .longOpt(ProgramOption.HELP.getOption())
                 .required(false)
                 .desc(ProgramOption.HELP.getDescription())
                 .build();
 
         Option startDate = Option.builder()
-                .longOpt(ProgramOption.START_DATE.getName())
+                .longOpt(ProgramOption.START_DATE.getOption())
                 .hasArg()
                 .required(false)
                 .desc(ProgramOption.START_DATE.getDescription())
                 .build();
 
         Option duration = Option.builder()
-                .longOpt(ProgramOption.DURATION.getName())
+                .longOpt(ProgramOption.DURATION.getOption())
                 .hasArg()
                 .required(false)
                 .desc(ProgramOption.DURATION.getDescription())
                 .build();
 
         Option threshold = Option.builder()
-                .longOpt(ProgramOption.THRESHOLD.getName())
+                .longOpt(ProgramOption.THRESHOLD.getOption())
                 .hasArg()
                 .required(false)
                 .desc(ProgramOption.THRESHOLD.getDescription())
