@@ -48,24 +48,25 @@ public class Main {
             String thresholdArg = checkThresholdOption(commandLine);
 
             File file = ArgumentUtil.parseAccessFile(accessLogArg);
-            LocalDateTime dateTime = ArgumentUtil.parseStartDate(startDateArg);
+            LocalDateTime startDate = ArgumentUtil.parseStartDate(startDateArg);
             DurationArg duration = ArgumentUtil.parseDuration(durationArg);
+            LocalDateTime finalDate = ArgumentUtil.getFinalDate(startDate, duration);
             int threshold = ArgumentUtil.parseThreshold(thresholdArg);
 
-            // find any IPs that made more than 100 requests 
-            // starting from 2017-01-01.13:00:00 to 2017-01-01.14:00:00 (one hour) 
             try {
+                // find any IPs that made more than 100 requests 
+                // starting from 2017-01-01.13:00:00 to 2017-01-01.14:00:00 (one hour) 
                 Processor processor = new DefaultProcessor();
-                Map<String, Integer> ips = processor.findIps(file, dateTime, duration, threshold);
-                ips.entrySet().forEach(ip -> System.out.println("IP: " + ip.getKey() + "\tCount: " + ip.getValue()));
+                Map<String, Integer> ips = processor.findIps(file, startDate, finalDate, threshold);
+                
+                // and print them to console 
+                print(ips, threshold, startDate, finalDate);
+                
+                // AND also load them to another MySQL table with comments on why it's blocked.
+//              load(ips);
             } catch (IOException e) {
                 System.out.println(e.getMessage());
             }
-            // and print them to console 
-//        print();
-            // AND also load them to another MySQL table with comments on why it's blocked.
-//        Map<String, String> ips = new HashMap<>();
-//        load(ips);
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
             System.exit(0);
@@ -106,5 +107,11 @@ public class Main {
             throw new IllegalArgumentException(String.format(CHECK_OPTION_MSG, ProgramOption.THRESHOLD.getOption()));
 //        program.help();
         }
+    }
+    
+    public static void print(Map<String, Integer> ips, int threshold, LocalDateTime startDate, LocalDateTime finalDate) {
+        String headerMsg = String.format("IPs that made more than %d requests from %s to %s", threshold, startDate, finalDate);
+        System.out.println(headerMsg);
+        ips.entrySet().forEach(ip -> System.out.println("IP: " + ip.getKey() + "\tTotal Requests: " + ip.getValue()));
     }
 }

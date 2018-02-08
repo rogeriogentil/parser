@@ -11,6 +11,6 @@ import java.util.Map;
  */
 public interface Processor {
 
-    Map<String, Integer> findIps(File file, LocalDateTime startDate, DurationArg duration, int threshold) throws IOException;
+    Map<String, Integer> findIps(File file, LocalDateTime startDate, LocalDateTime finalDate, int threshold) throws IOException;
     
 }

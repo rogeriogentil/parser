@@ -45,4 +45,15 @@ public class ArgumentUtil {
             throw new IllegalArgumentException(e.getMessage());
         }
     }
+    
+    public static LocalDateTime getFinalDate(LocalDateTime startDate, DurationArg duration) {
+        switch (duration) {
+            case HOURLY:
+                return LocalDateTime.from(startDate).plusHours(1);
+            case DAILY:
+                return LocalDateTime.from(startDate).plusDays(1);                
+            default:
+                throw new IllegalArgumentException("");
+        }
+    }
 }

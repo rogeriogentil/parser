@@ -41,6 +41,7 @@ public class ProcessorTest {
         // Arguments sended
         final LocalDateTime startDate = ArgumentUtil.parseStartDate("2017-01-01.00:00:00");
         final DurationArg duration = ArgumentUtil.parseDuration("hourly");
+        final LocalDateTime finalDate = ArgumentUtil.getFinalDate(startDate, duration);
         final int threshold = 3;
         
         // Create file to test
@@ -54,7 +55,7 @@ public class ProcessorTest {
         FileUtils.writeStringToFile(file, data, Charset.defaultCharset());
 
         // Call method
-        Map<String, Integer> mapped = processor.findIps(file, startDate, duration, threshold);
+        Map<String, Integer> mapped = processor.findIps(file, startDate, finalDate, threshold);
 
         // Assertion
         final ImmutableMap<String, Integer> ipsExpected = ImmutableMap.<String, Integer>builder()
@@ -69,6 +70,7 @@ public class ProcessorTest {
         // Arguments sended
         final LocalDateTime startDate = ArgumentUtil.parseStartDate("2017-01-01.00:00:00");
         final DurationArg duration = ArgumentUtil.parseDuration("hourly");
+        final LocalDateTime finalDate = ArgumentUtil.getFinalDate(startDate, duration);
         final int threshold = 3;
         
         // Create file to test
@@ -88,7 +90,7 @@ public class ProcessorTest {
         FileUtils.writeStringToFile(file, data, Charset.defaultCharset());
         
         // Call method
-        Map<String, Integer> mapped = processor.findIps(file, startDate, duration, threshold);
+        Map<String, Integer> mapped = processor.findIps(file, startDate, finalDate, threshold);
 
         // Assertion
         final ImmutableMap<String, Integer> ipsExpected = ImmutableMap.<String, Integer>builder()

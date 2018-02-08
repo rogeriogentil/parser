@@ -17,25 +17,12 @@ import org.apache.commons.io.LineIterator;
 public class DefaultProcessor implements Processor {
 
     private Map<String, Integer> ips;
-    
     private static final String DATE_FORMAT_FILE = "yyyy-MM-dd HH:mm:ss.SSS";
 
     // TODO: Does Stream could be better than File to avoid IOException? Verify.
     @Override
-    public Map<String, Integer> findIps(File file, LocalDateTime startDate, DurationArg duration, int threshold) throws IOException {
+    public Map<String, Integer> findIps(File file, LocalDateTime startDate, LocalDateTime finalDate, int threshold) throws IOException {
         ips = new HashMap<>();
-                
-        LocalDateTime endDate;        
-        switch (duration) {
-            case HOURLY:
-                endDate = LocalDateTime.from(startDate).plusHours(1);
-                break;
-            case DAILY:
-                endDate = LocalDateTime.from(startDate).plusDays(1);
-                break;
-            default:
-                throw new IllegalArgumentException("");
-        }
 
         LineIterator lineIterator = FileUtils.lineIterator(file);
 
@@ -49,14 +36,13 @@ public class DefaultProcessor implements Processor {
             String statusCode = line[3];
             String userAgent = line[4];
 
-            // new method?
             LocalDateTime dateOfTheLine = LocalDateTime.parse(dateTxt, DateTimeFormatter.ofPattern(DATE_FORMAT_FILE));
 
             if (dateOfTheLine.isBefore(startDate)) {
                 continue;
             }
 
-            if (dateOfTheLine.isAfter(endDate)) {
+            if (dateOfTheLine.isAfter(finalDate)) {
                 break;
             }
 
