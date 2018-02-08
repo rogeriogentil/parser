@@ -23,6 +23,7 @@ public class Main {
      *
      * @param args
      * @throws org.apache.commons.cli.ParseException
+     * @throws java.text.ParseException
      */
     public static void main(String[] args) throws ParseException, java.text.ParseException {
         Program program = new Program();
@@ -35,27 +36,42 @@ public class Main {
             program.help();
             return;
         }
-
+        
+        String startDateArg;
         if (commandLine.hasOption(ProgramOption.START_DATE.getOption())) {
-            String startDateTxt = commandLine.getOptionValue(ProgramOption.START_DATE.getOption());
-            checkStartDateArg(startDateTxt);
+            startDateArg = commandLine.getOptionValue(ProgramOption.START_DATE.getOption());
+            checkStartDateArg(startDateArg);
         } else {
             throw new IllegalArgumentException();
         }
 
+        String durationArg;
         if (commandLine.hasOption(ProgramOption.DURATION.getOption())) {
-            String durationArg = commandLine.getOptionValue(ProgramOption.DURATION.getOption());
+            durationArg = commandLine.getOptionValue(ProgramOption.DURATION.getOption());
             checkDurationArg(durationArg);
         } else {
             throw new IllegalArgumentException();
         }
         
+        String thresholdArg;
         if (commandLine.hasOption(ProgramOption.THRESHOLD.getOption())) {
-            String thresholdArg = commandLine.getOptionValue(ProgramOption.THRESHOLD.getOption());
+            thresholdArg = commandLine.getOptionValue(ProgramOption.THRESHOLD.getOption());
             checkThresholdArg(thresholdArg);
         } else {
             throw new IllegalArgumentException();
         }
+        
+        // find any IPs that made more than 100 requests 
+        // starting from 2017-01-01.13:00:00 to 2017-01-01.14:00:00 (one hour) 
+//        Processor processor = new DefaultProcessor();
+//        processor.findIps(new File(""), startDateArg, durationArg, thresholdArg);
+        
+        // and print them to console 
+//        print();
+
+        // AND also load them to another MySQL table with comments on why it's blocked.
+//        Map<String, String> ips = new HashMap<>();
+//        load(ips);
     }
 
     public static void checkStartDateArg(String startDateTxt) throws java.text.ParseException {
