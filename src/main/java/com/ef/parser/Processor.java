@@ -2,6 +2,7 @@ package com.ef.parser;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 /**
@@ -10,6 +11,6 @@ import java.util.Map;
  */
 public interface Processor {
 
-    Map<String, Integer> findIps(File file, String startDate, String duration, String threshold) throws IOException;
+    Map<String, Integer> findIps(File file, LocalDateTime startDate, DurationArg duration, int threshold) throws IOException;
     
 }

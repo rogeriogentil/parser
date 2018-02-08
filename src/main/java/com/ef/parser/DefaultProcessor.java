@@ -17,19 +17,16 @@ import org.apache.commons.io.LineIterator;
 public class DefaultProcessor implements Processor {
 
     private Map<String, Integer> ips;
-    private static final String DATE_FORMAT_ARG = "yyyy-MM-dd.HH:mm:ss";
+    
     private static final String DATE_FORMAT_FILE = "yyyy-MM-dd HH:mm:ss.SSS";
 
     // TODO: Does Stream could be better than File to avoid IOException? Verify.
     @Override
-    public Map<String, Integer> findIps(File file, String startDateTxt, String duration, String threshold) throws IOException {
+    public Map<String, Integer> findIps(File file, LocalDateTime startDate, DurationArg duration, int threshold) throws IOException {
         ips = new HashMap<>();
-        
-        LocalDateTime startDate = LocalDateTime.parse(startDateTxt, DateTimeFormatter.ofPattern(DATE_FORMAT_ARG));
-        LocalDateTime endDate;
-
-        DurationArg durationArg = DurationArg.valueOf(duration.toUpperCase());
-        switch (durationArg) {
+                
+        LocalDateTime endDate;        
+        switch (duration) {
             case HOURLY:
                 endDate = LocalDateTime.from(startDate).plusHours(1);
                 break;
@@ -71,10 +68,8 @@ public class DefaultProcessor implements Processor {
             }
         }
 
-        int limit = Integer.parseInt(threshold);
-
         return ips.entrySet().stream()
-                .filter(map -> map.getValue() >= limit)
+                .filter(map -> map.getValue() >= threshold)
                 .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
     }
 

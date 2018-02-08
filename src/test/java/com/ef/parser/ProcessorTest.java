@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.time.LocalDateTime;
 import java.util.Map;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
@@ -38,9 +39,9 @@ public class ProcessorTest {
     @Test
     public void mustFindIpsThatMadeThreeOrMoreThanThreeRequests() throws IOException {
         // Arguments sended
-        final String startDate = "2017-01-01.00:00:00";
-        final String duration = "hourly";
-        final String threshold = "3";
+        final LocalDateTime startDate = ArgumentUtil.parseStartDate("2017-01-01.00:00:00");
+        final DurationArg duration = ArgumentUtil.parseDuration("hourly");
+        final int threshold = 3;
         
         // Create file to test
         final String data
@@ -66,9 +67,9 @@ public class ProcessorTest {
     @Test
     public void mustFindIpsThatMadeThreeMoreThanThreeRequestsOnOneHour() throws IOException {
         // Arguments sended
-        final String startDate = "2017-01-01.00:00:00";
-        final String duration = "hourly";
-        final String threshold = "3";
+        final LocalDateTime startDate = ArgumentUtil.parseStartDate("2017-01-01.00:00:00");
+        final DurationArg duration = ArgumentUtil.parseDuration("hourly");
+        final int threshold = 3;
         
         // Create file to test
         final String data
