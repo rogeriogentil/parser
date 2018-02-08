@@ -23,7 +23,7 @@ public class Program {
                 .desc(ProgramOption.HELP.getDescription())
                 .build();
 
-        Option accessLog = Option.builder("accesslog")
+        Option accessLog = Option.builder()
                 .longOpt(ProgramOption.ACCESS_LOG.getOption())
                 .hasArg()
                 .required(false)
