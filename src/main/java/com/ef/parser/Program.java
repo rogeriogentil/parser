@@ -23,6 +23,13 @@ public class Program {
                 .desc(ProgramOption.HELP.getDescription())
                 .build();
 
+        Option accessLog = Option.builder("accesslog")
+                .longOpt(ProgramOption.ACCESS_LOG.getOption())
+                .hasArg()
+                .required(false)
+                .desc(ProgramOption.ACCESS_LOG.getDescription())
+                .build();
+        
         Option startDate = Option.builder()
                 .longOpt(ProgramOption.START_DATE.getOption())
                 .hasArg()
@@ -46,6 +53,7 @@ public class Program {
 
         options = new Options();
         options.addOption(help);
+        options.addOption(accessLog);
         options.addOption(startDate);
         options.addOption(duration);
         options.addOption(threshold);

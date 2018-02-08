@@ -1,8 +1,5 @@
 package com.ef.parser;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -25,7 +22,7 @@ public class Main {
      * @throws org.apache.commons.cli.ParseException
      * @throws java.text.ParseException
      */
-    public static void main(String[] args) throws ParseException, java.text.ParseException {
+    public static void main(String[] args) throws org.apache.commons.cli.ParseException, java.text.ParseException  {
         Program program = new Program();
         Options options = program.getOptions();
 
@@ -37,28 +34,39 @@ public class Main {
             return;
         }
         
+        String accessLogArg;
+        if (commandLine.hasOption(ProgramOption.ACCESS_LOG.getOption())) {
+            accessLogArg = commandLine.getOptionValue(ProgramOption.ACCESS_LOG.getOption());
+        } else {
+            System.out.println("The " + ProgramOption.ACCESS_LOG.getOption() + " is required.");
+            program.help();
+        }
+        
         String startDateArg;
         if (commandLine.hasOption(ProgramOption.START_DATE.getOption())) {
             startDateArg = commandLine.getOptionValue(ProgramOption.START_DATE.getOption());
-            checkStartDateArg(startDateArg);
+            ArgumentParser.checkStartDateArg(startDateArg);
         } else {
-            throw new IllegalArgumentException();
+            System.out.println("The " + ProgramOption.START_DATE.getOption() + " is required.");
+            program.help();
         }
 
         String durationArg;
         if (commandLine.hasOption(ProgramOption.DURATION.getOption())) {
             durationArg = commandLine.getOptionValue(ProgramOption.DURATION.getOption());
-            checkDurationArg(durationArg);
+            ArgumentParser.checkDurationArg(durationArg);
         } else {
-            throw new IllegalArgumentException();
+            System.out.println("The " + ProgramOption.DURATION.getOption() + " is required.");
+            program.help();
         }
         
         String thresholdArg;
         if (commandLine.hasOption(ProgramOption.THRESHOLD.getOption())) {
             thresholdArg = commandLine.getOptionValue(ProgramOption.THRESHOLD.getOption());
-            checkThresholdArg(thresholdArg);
+            ArgumentParser.checkThresholdArg(thresholdArg);
         } else {
-            throw new IllegalArgumentException();
+            System.out.println("The " + ProgramOption.THRESHOLD.getOption() + " is required.");
+            program.help();
         }
         
         // find any IPs that made more than 100 requests 
@@ -72,20 +80,5 @@ public class Main {
         // AND also load them to another MySQL table with comments on why it's blocked.
 //        Map<String, String> ips = new HashMap<>();
 //        load(ips);
-    }
-
-    public static void checkStartDateArg(String startDateTxt) throws java.text.ParseException {
-        final String dateFormat = "yyyy-MM-dd.HH:mm:ss";
-
-        DateFormat format = new SimpleDateFormat(dateFormat);
-        format.parse(startDateTxt);
-    }
-
-    public static void checkDurationArg(String durationArg) {
-        DurationArg.valueOf(durationArg.toUpperCase());
-    }
-    
-    public static void checkThresholdArg(String thresholdArg) {
-        Integer.parseInt(thresholdArg);
     }
 }

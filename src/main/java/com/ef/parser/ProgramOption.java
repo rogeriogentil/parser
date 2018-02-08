@@ -6,8 +6,9 @@ package com.ef.parser;
  */
 public enum ProgramOption {
     
+    ACCESS_LOG("accesslog", "Web Server access log file"),
     START_DATE("startDate", "Start date"),
-    DURATION("duration", "Duration"),
+    DURATION("duration", "Duration (hourly or daily)"),
     THRESHOLD("threshold", "Threshold"),
     HELP("help", "show help");
     
