@@ -1,4 +1,4 @@
-package com.ef.parser;
+package com.ef;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,14 +21,14 @@ import org.junit.Before;
  *
  * @author rogerio
  */
-public class MainTest {
+public class ParserTest {
 
     private static final String FILE_NAME = "access-for-test.log";
     private static final String ABSOLUTE_FILE_NAME = FileUtils.getTempDirectoryPath() + File.separator + FILE_NAME;
     private static File file;
-    private Program program;
+    private Parser parser;
     private Options options;
-    private CommandLineParser parser;
+    private CommandLineParser commandLineParser;
     private CommandLine commandLine;
 
     @BeforeClass
@@ -44,29 +44,29 @@ public class MainTest {
 
     @Before
     public void beforeEachTest() {
-        program = new Program();
-        options = program.getOptions();
-        parser = new DefaultParser();
+        parser = new Parser();
+        options = parser.getOptions();
+        commandLineParser = new DefaultParser();
     }
 
     @Test
     public void mustReadOptionsTogetherOfTheArguments() throws ParseException, java.text.ParseException {
         String[] args = {"--accesslog=" + ABSOLUTE_FILE_NAME, "--startDate=2017-01-01.13:00:00", "--duration=hourly", "--threshold=100"};
-        Main.main(args);
+        Parser.main(args);
         // TODO: use Mockito to verify call?
     }
 
     @Test
     public void mustReadOptionsSeparatedOfTheArguments() throws ParseException, java.text.ParseException {
         String[] args = {"--accesslog", ABSOLUTE_FILE_NAME, "--startDate", "2017-01-01.13:00:00", "--duration", "hourly", "--threshold", "100"};
-        Main.main(args);
+        Parser.main(args);
         // TODO: use Mockito to verify call?
     }
 
     @Test
     public void mustPrintHelpWhenNoOptions() throws ParseException, java.text.ParseException {
         String[] args = {};
-        Main.main(args);
+        Parser.main(args);
         // TODO: use Mockito to verify call?
     }
 
@@ -74,8 +74,8 @@ public class MainTest {
     public void mustValidateAccessLogOption() throws ParseException {
         String[] args = {"--accesslog=" + ABSOLUTE_FILE_NAME};
 
-        commandLine = parser.parse(options, args);
-        String arg = Main.checkAccessFileOption(commandLine);
+        commandLine = commandLineParser.parse(options, args);
+        String arg = Parser.checkAccessFileOption(commandLine);
 
         assertThat(arg, is(equalTo(ABSOLUTE_FILE_NAME)));
     }
@@ -84,16 +84,16 @@ public class MainTest {
     public void mustThrowIllegalArgumentExceptionWhenAccessLogOptionIsNotPresent() throws ParseException {
         String[] args = {};
 
-        commandLine = parser.parse(options, args);
-        String arg = Main.checkAccessFileOption(commandLine);
+        commandLine = commandLineParser.parse(options, args);
+        String arg = Parser.checkAccessFileOption(commandLine);
     }
 
     @Test
     public void mustValidateStartDateOption() throws ParseException {
         String[] args = {"--startDate=2017-01-01.13:00:00"};
 
-        commandLine = parser.parse(options, args);
-        String arg = Main.checkStartDateOption(commandLine);
+        commandLine = commandLineParser.parse(options, args);
+        String arg = Parser.checkStartDateOption(commandLine);
 
         assertThat(arg, is(equalTo("2017-01-01.13:00:00")));
     }
@@ -102,16 +102,16 @@ public class MainTest {
     public void mustThrowIllegalArgumentExceptionWhenStartDateOptionIsNotPresent() throws ParseException {
         String[] args = {};
 
-        commandLine = parser.parse(options, args);
-        String arg = Main.checkStartDateOption(commandLine);
+        commandLine = commandLineParser.parse(options, args);
+        String arg = Parser.checkStartDateOption(commandLine);
     }
 
     @Test
     public void mustValidateDurationOption() throws ParseException {
         String[] args = {"--duration=hourly"};
 
-        commandLine = parser.parse(options, args);
-        String arg = Main.checkDurationOption(commandLine);
+        commandLine = commandLineParser.parse(options, args);
+        String arg = Parser.checkDurationOption(commandLine);
 
         assertThat(arg, is(equalTo("hourly")));
     }
@@ -120,16 +120,16 @@ public class MainTest {
     public void mustThrowIllegalArgumentExceptionWhenDurationOptionIsNotPresent() throws ParseException {
         String[] args = {};
 
-        commandLine = parser.parse(options, args);
-        String arg = Main.checkDurationOption(commandLine);
+        commandLine = commandLineParser.parse(options, args);
+        String arg = Parser.checkDurationOption(commandLine);
     }
     
         @Test
     public void mustValidateThresholdOption() throws ParseException {
         String[] args = {"--threshold=100"};
 
-        commandLine = parser.parse(options, args);
-        String arg = Main.checkThresholdOption(commandLine);
+        commandLine = commandLineParser.parse(options, args);
+        String arg = Parser.checkThresholdOption(commandLine);
 
         assertThat(arg, is(equalTo("100")));
     }
@@ -138,7 +138,7 @@ public class MainTest {
     public void mustThrowIllegalArgumentExceptionWhenThresholdOptionIsNotPresent() throws ParseException {
         String[] args = {};
 
-        commandLine = parser.parse(options, args);
-        String arg = Main.checkThresholdOption(commandLine);
+        commandLine = commandLineParser.parse(options, args);
+        String arg = Parser.checkThresholdOption(commandLine);
     }
 }
