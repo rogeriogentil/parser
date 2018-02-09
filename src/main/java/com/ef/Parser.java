@@ -5,12 +5,16 @@ import com.ef.parser.DefaultProcessor;
 import com.ef.parser.DurationArg;
 import com.ef.parser.Processor;
 import com.ef.parser.ProgramOption;
+import com.ef.parser.model.AccessLog;
+import com.ef.parser.persistence.AccessLogDAO;
+import com.ef.parser.persistence.AccessLogPersistence;
 import com.ef.parser.persistence.LogDAO;
 import com.ef.parser.persistence.LogPersistence;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.Map;
+import java.util.Collection;
+import java.util.List;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -26,6 +30,7 @@ import org.apache.commons.cli.ParseException;
 public class Parser {
 
     private static final String CHECK_OPTION_MSG = "The %s option is required.";
+    private static final String COMMENT_BLOCK_MSG = "that made more than %d requests from %s to %s";
     private Options options;
 
     public Parser() {
@@ -102,23 +107,24 @@ public class Parser {
             String thresholdArg = checkThresholdOption(commandLine);
 
             File file = ArgumentUtil.parseAccessFile(accessLogArg);
+            
             LocalDateTime startDate = ArgumentUtil.parseStartDate(startDateArg);
             DurationArg duration = ArgumentUtil.parseDuration(durationArg);
             LocalDateTime finalDate = ArgumentUtil.getFinalDate(startDate, duration);
             int threshold = ArgumentUtil.parseThreshold(thresholdArg);
 
             try {
-                // find any IPs that made more than 100 requests 
-                // starting from 2017-01-01.13:00:00 to 2017-01-01.14:00:00 (one hour) 
                 Processor processor = new DefaultProcessor();
-                Map<String, Integer> ips = processor.findIps(file, startDate, finalDate, threshold);
+                Collection<AccessLog> acessLogs = processor.read(file);
                 
-                // and print them to console 
+                AccessLogPersistence accessLogDAO = new AccessLogDAO();
+                accessLogDAO.persist(acessLogs);
+                
+                List<String> ips = accessLogDAO.findIps(startDate, finalDate, threshold);
                 print(ips, threshold, startDate, finalDate);
-                
-                // AND also load them to another MySQL table with comments on why it's blocked.
+
                 LogPersistence log = new LogDAO();
-                log.load(ips);
+                log.load(ips, String.format("IP " + COMMENT_BLOCK_MSG, threshold, startDate, finalDate));
             } catch (IOException e) {
                 System.out.println(e.getMessage());
             }
@@ -172,10 +178,10 @@ public class Parser {
      * @param startDate
      * @param finalDate 
      */
-    public static void print(Map<String, Integer> ips, int threshold, LocalDateTime startDate, LocalDateTime finalDate) {
-        String headerMsg = String.format("IPs that made more than %d requests from %s to %s", threshold, startDate, finalDate);
+    public static void print(List<String> ips, int threshold, LocalDateTime startDate, LocalDateTime finalDate) {
+        String headerMsg = String.format("IPs " + COMMENT_BLOCK_MSG, threshold, startDate, finalDate);
         System.out.println(headerMsg);
-        ips.entrySet().forEach(ip -> System.out.println("IP: " + ip.getKey() + "\tTotal Requests: " + ip.getValue()));
+        ips.forEach(ip -> System.out.println("IP: " + ip));
     }
 
     /**

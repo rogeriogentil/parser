@@ -1,12 +1,13 @@
 package com.ef.parser;
 
+import com.ef.parser.model.AccessLog;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
-import java.util.stream.Collectors;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
 
@@ -19,10 +20,10 @@ public class DefaultProcessor implements Processor {
     private Map<String, Integer> ips;
     private static final String DATE_FORMAT_FILE = "yyyy-MM-dd HH:mm:ss.SSS";
 
-    // TODO: Does Stream could be better than File to avoid IOException? Verify.
     @Override
-    public Map<String, Integer> findIps(File file, LocalDateTime startDate, LocalDateTime finalDate, int threshold) throws IOException {
-        ips = new HashMap<>();
+    public Collection<AccessLog> read(File file) throws IOException {
+        AccessLog log;
+        Collection<AccessLog> accessLogs = new ArrayList<>();
 
         LineIterator lineIterator = FileUtils.lineIterator(file);
 
@@ -38,25 +39,10 @@ public class DefaultProcessor implements Processor {
 
             LocalDateTime dateOfTheLine = LocalDateTime.parse(dateTxt, DateTimeFormatter.ofPattern(DATE_FORMAT_FILE));
 
-            if (dateOfTheLine.isBefore(startDate)) {
-                continue;
-            }
-
-            if (dateOfTheLine.isAfter(finalDate)) {
-                break;
-            }
-
-            if (ips.get(ip) != null) {
-                Integer count = ips.get(ip);
-                ips.put(ip, ++count);
-            } else {
-                ips.put(ip, 1);
-            }
+            log = new AccessLog(dateOfTheLine, ip, request, statusCode, userAgent);
+            accessLogs.add(log);
         }
 
-        return ips.entrySet().stream()
-                .filter(map -> map.getValue() >= threshold)
-                .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
+        return accessLogs;
     }
-
 }

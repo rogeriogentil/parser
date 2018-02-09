@@ -16,6 +16,7 @@ import org.junit.BeforeClass;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.MatcherAssert.*;
 import org.junit.Before;
+import org.junit.Ignore;
 
 /**
  *
@@ -49,6 +50,7 @@ public class ParserTest {
         commandLineParser = new DefaultParser();
     }
 
+    @Ignore
     @Test
     public void mustReadOptionsTogetherOfTheArguments() throws ParseException, java.text.ParseException {
         String[] args = {"--accesslog=" + ABSOLUTE_FILE_NAME, "--startDate=2017-01-01.13:00:00", "--duration=hourly", "--threshold=100"};
@@ -56,6 +58,7 @@ public class ParserTest {
         // TODO: use Mockito to verify call?
     }
 
+    @Ignore
     @Test
     public void mustReadOptionsSeparatedOfTheArguments() throws ParseException, java.text.ParseException {
         String[] args = {"--accesslog", ABSOLUTE_FILE_NAME, "--startDate", "2017-01-01.13:00:00", "--duration", "hourly", "--threshold", "100"};
