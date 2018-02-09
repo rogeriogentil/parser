@@ -1,0 +1,5 @@
+db:
+  build: .
+  container_name: parser-db
+  ports:
+    - "3306:3306"

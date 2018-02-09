@@ -24,6 +24,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <version.mysql-connector-java>5.1.45</version.mysql-connector-java>
     </properties>
     
     <dependencies>
@@ -44,6 +45,18 @@
             <artifactId>guava</artifactId>
             <version>24.0-jre</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.sql2o</groupId>
+            <artifactId>sql2o</artifactId>
+            <version>1.5.4</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${version.mysql-connector-java}</version>
         </dependency>
 
         <dependency>
@@ -94,6 +107,19 @@
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+            
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>5.0.7</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>mysql</groupId>
+                        <artifactId>mysql-connector-java</artifactId>
+                        <version>${version.mysql-connector-java}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>
